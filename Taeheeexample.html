@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROTO // SPRING EXHIBIT 2025</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;700&display=swap');
+
+  :root {
+    --bg: #f0ede8;
+    --black: #0a0a0a;
+    --white: #fafafa;
+    --purple: #6b00ff;
+    --orange: #ff4500;
+    --cyan: #00e5ff;
+    --magenta: #ff00aa;
+    --gray: #999;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Space Mono', monospace;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+    cursor: none;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  #cursor {
+    position: fixed;
+    width: 20px; height: 20px;
+    border: 2px solid var(--black);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.05s, width 0.1s, height 0.1s;
+    mix-blend-mode: difference;
+    background: rgba(255,255,255,0.8);
+  }
+  #cursor.hammer { border-radius: 2px; width: 24px; height: 24px; background: rgba(255,69,0,0.5); }
+  #cursor.spray  { border-radius: 50%; width: 30px; height: 30px; background: rgba(107,0,255,0.3); border-style: dashed; }
+  #cursor.tape   { border-radius: 0; width: 40px; height: 8px; background: rgba(0,229,255,0.5); }
+  #cursor.stitch { border-radius: 50% 0; width: 16px; height: 16px; background: rgba(255,0,170,0.5); }
+  #cursor.gun    { border-radius: 0; width: 6px; height: 6px; background: red; }
+
+  /* ── SCANLINES overlay ── */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px);
+    pointer-events: none;
+    z-index: 9000;
+  }
+
+  /* ══════════════════════
+     SCREEN 1: COVER
+  ══════════════════════ */
+  #cover {
+    position: fixed; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--bg);
+    z-index: 100;
+    cursor: none;
+  }
+
+  .cover-noise {
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  .cover-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Glitchy image tiles in background */
+  .bg-tiles {
+    position: absolute; inset: 0;
+    overflow: hidden;
+    opacity: 0.15;
+  }
+  .bg-tile {
+    position: absolute;
+    background: var(--purple);
+    animation: tileDrift 8s infinite alternate ease-in-out;
+  }
+
+  @keyframes tileDrift {
+    0%   { transform: translate(0,0) rotate(0deg); opacity: 0.3; }
+    100% { transform: translate(10px,5px) rotate(2deg); opacity: 0.6; }
+  }
+
+  .cover-tag {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .cover-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(80px, 15vw, 160px);
+    color: var(--black);
+    line-height: 0.9;
+    text-align: center;
+    position: relative;
+    letter-spacing: -2px;
+  }
+
+  .cover-title span {
+    display: block;
+    position: relative;
+  }
+
+  .cover-title .glitch-layer {
+    position: absolute; top: 0; left: 0; right: 0;
+    color: var(--purple);
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    animation: glitchSlide 4s infinite;
+    opacity: 0;
+  }
+  .cover-title .glitch-layer2 {
+    position: absolute; top: 0; left: 0; right: 0;
+    color: var(--orange);
+    clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%);
+    animation: glitchSlide2 4s infinite;
+    opacity: 0;
+  }
+
+  @keyframes glitchSlide {
+    0%, 85%, 100% { opacity: 0; transform: translateX(0); }
+    86% { opacity: 1; transform: translateX(-5px); }
+    87% { opacity: 1; transform: translateX(5px); }
+    88% { opacity: 0; }
+    92% { opacity: 1; transform: translateX(-3px); }
+    93% { opacity: 0; }
+  }
+  @keyframes glitchSlide2 {
+    0%, 88%, 100% { opacity: 0; transform: translateX(0); }
+    89% { opacity: 1; transform: translateX(4px); }
+    91% { opacity: 0; }
+  }
+
+  .cover-sub {
+    font-family: 'Noto Sans KR', sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 20px;
+    letter-spacing: 2px;
+  }
+
+  .cover-cta {
+    margin-top: 60px;
+    padding: 14px 40px;
+    border: 1.5px solid var(--black);
+    background: transparent;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: none;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.2s;
+    color: var(--black);
+  }
+  .cover-cta::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--black);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  .cover-cta:hover::before { transform: translateX(0); }
+  .cover-cta:hover { color: var(--white); }
+  .cover-cta span { position: relative; z-index: 1; }
+
+  .cover-corner {
+    position: absolute;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gray);
+    font-family: 'Space Mono', monospace;
+  }
+  .cover-corner.tl { top: 20px; left: 24px; }
+  .cover-corner.tr { top: 20px; right: 24px; text-align: right; }
+  .cover-corner.bl { bottom: 20px; left: 24px; }
+  .cover-corner.br { bottom: 20px; right: 24px; text-align: right; }
+
+  /* ══════════════════════
+     SCREEN 2: TOOL SELECT
+  ══════════════════════ */
+  #tool-select {
+    position: fixed; inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    background: var(--black);
+    z-index: 90;
+  }
+
+  .ts-header {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 8vw, 100px);
+    color: var(--white);
+    letter-spacing: 8px;
+    margin-bottom: 8px;
+    animation: tsIn 0.6s cubic-bezier(.16,1,.3,1) both;
+  }
+  .ts-sub {
+    font-size: 10px;
+    color: var(--gray);
+    letter-spacing: 4px;
+    margin-bottom: 60px;
+    animation: tsIn 0.6s 0.1s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes tsIn {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+  }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 160px);
+    gap: 16px;
+    animation: tsIn 0.6s 0.2s cubic-bezier(.16,1,.3,1) both;
+  }
+
+  .tool-card {
+    border: 1px solid #333;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: none;
+    transition: border-color 0.2s, background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .tool-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .tool-card:hover { border-color: var(--white); }
+  .tool-card:hover::before { opacity: 0.08; background: var(--white); }
+
+  .tool-card .icon { font-size: 36px; margin-bottom: 12px; display: block; }
+  .tool-card .name {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .tool-card .desc {
+    font-size: 9px;
+    color: #555;
+    margin-top: 6px;
+    letter-spacing: 1px;
+    line-height: 1.5;
+  }
+  .tool-card.selected {
+    border-color: var(--cyan);
+    background: rgba(0,229,255,0.05);
+  }
+  .tool-card.selected .name { color: var(--cyan); }
+
+  .ts-confirm {
+    margin-top: 40px;
+    padding: 14px 48px;
+    border: 1px solid #444;
+    background: transparent;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: #666;
+    cursor: none;
+    transition: all 0.2s;
+    animation: tsIn 0.6s 0.3s cubic-bezier(.16,1,.3,1) both;
+  }
+  .ts-confirm.ready {
+    border-color: var(--white);
+    color: var(--white);
+  }
+  .ts-confirm.ready:hover {
+    background: var(--white);
+    color: var(--black);
+  }
+
+  /* ══════════════════════
+     SCREEN 3: MAIN CANVAS
+  ══════════════════════ */
+  #main-canvas {
+    position: fixed; inset: 0;
+    display: none;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  /* Desktop elements */
+  .desktop-el {
+    position: absolute;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .sys-text {
+    color: #888;
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+  .sys-text-dark {
+    color: var(--black);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .big-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 6vw, 80px);
+    color: var(--black);
+    opacity: 0.08;
+    letter-spacing: 4px;
+  }
+
+  /* HUD toolbar */
+  #hud {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: rgba(10,10,10,0.92);
+    border: 1px solid #333;
+    backdrop-filter: blur(10px);
+  }
+
+  .hud-tool {
+    padding: 12px 18px;
+    cursor: none;
+    border-right: 1px solid #222;
+    font-size: 18px;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .hud-tool:last-child { border-right: none; }
+  .hud-tool:hover { background: #1a1a1a; }
+  .hud-tool.active { background: #222; }
+  .hud-tool.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--cyan);
+  }
+
+  .hud-sep {
+    width: 1px; height: 40px;
+    background: #333;
+  }
+
+  .hud-label {
+    padding: 0 16px;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #555;
+    white-space: nowrap;
+  }
+
+  .hud-esc {
+    padding: 8px 16px;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #444;
+    border-left: 1px solid #222;
+  }
+
+  /* Fragments / effects container */
+  #effects-layer {
+    position: fixed; inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    overflow: hidden;
+  }
+
+  /* Glass shard */
+  .shard {
+    position: absolute;
+    pointer-events: none;
+    animation: shardFall var(--dur) ease-in forwards;
+  }
+  @keyframes shardFall {
+    0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(0.3); opacity: 0; }
+  }
+
+  /* Spray particle */
+  .spray-dot {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: sprayFade 1.5s ease-out forwards;
+  }
+  @keyframes sprayFade {
+    0%   { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(0.2); opacity: 0; }
+  }
+
+  /* Tape strip */
+  .tape-strip {
+    position: absolute;
+    height: 10px;
+    background: rgba(0,229,255,0.4);
+    border: 1px solid rgba(0,229,255,0.7);
+    pointer-events: none;
+    box-shadow: 0 0 8px rgba(0,229,255,0.3);
+  }
+
+  /* Stitch mark */
+  .stitch-mark {
+    position: absolute;
+    width: 12px; height: 12px;
+    border: 1.5px solid var(--magenta);
+    transform: rotate(45deg) translate(-50%,-50%);
+    pointer-events: none;
+    animation: stitchGlow 2s ease-out forwards;
+  }
+  @keyframes stitchGlow {
+    0%   { box-shadow: 0 0 0 0 rgba(255,0,170,0.8); opacity: 1; }
+    50%  { box-shadow: 0 0 12px 4px rgba(255,0,170,0.3); }
+    100% { opacity: 0.3; }
+  }
+
+  /* Bullet hole */
+  .bullet-hole {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, #000 30%, transparent 70%);
+    pointer-events: none;
+    transform: translate(-50%,-50%);
+  }
+
+  /* Repair particle */
+  .repair-particle {
+    position: absolute;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--cyan);
+    pointer-events: none;
+    animation: repairFloat var(--dur) ease-out forwards;
+    box-shadow: 0 0 6px var(--cyan);
+  }
+  @keyframes repairFloat {
+    0%   { transform: translate(0,0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
+  }
+
+  /* Crack overlay */
+  .crack-overlay {
+    position: absolute;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  /* Screen shake */
+  @keyframes screenShake {
+    0%  { transform: translate(0,0); }
+    15% { transform: translate(-4px, 2px); }
+    30% { transform: translate(5px,-3px); }
+    45% { transform: translate(-3px, 5px); }
+    60% { transform: translate(4px,-1px); }
+    75% { transform: translate(-2px, 3px); }
+    100%{ transform: translate(0,0); }
+  }
+  .shaking { animation: screenShake 0.12s ease both; }
+
+  /* Color invert flash */
+  @keyframes invertFlash {
+    0%,100% { filter: none; }
+    50% { filter: invert(1) hue-rotate(90deg); }
+  }
+  .invert-flash { animation: invertFlash 0.1s ease both; }
+
+  /* Repair sparkle ring */
+  @keyframes sparkleRing {
+    0%   { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+    100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
+  }
+  .sparkle-ring {
+    position: absolute;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--cyan);
+    pointer-events: none;
+    animation: sparkleRing 0.6s ease-out forwards;
+    box-shadow: 0 0 10px var(--cyan);
+  }
+
+  /* Instruction bar */
+  #instruction {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: #aaa;
+    z-index: 500;
+    background: rgba(250,250,250,0.8);
+    padding: 6px 20px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0,0,0,0.08);
+    white-space: nowrap;
+  }
+
+  /* Damage tiles */
+  .damage-tile {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  /* corner labels */
+  #corner-tl {
+    position: fixed; top: 20px; left: 24px;
+    font-size: 9px; letter-spacing: 2px; color: #aaa;
+    z-index: 500;
+  }
+  #corner-br {
+    position: fixed; bottom: 90px; right: 24px;
+    font-size: 9px; letter-spacing: 2px; color: #aaa;
+    z-index: 500; text-align: right;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<!-- ── COVER ── -->
+<div id="cover">
+  <div class="cover-noise"></div>
+  <div class="cover-grid"></div>
+  <div class="bg-tiles" id="bgTiles"></div>
+
+  <div class="cover-corner tl">PROTO COLLECTIVE // 2025<br>봄 전시회</div>
+  <div class="cover-corner tr">SPRING EXHIBITION<br>NO.001</div>
+  <div class="cover-corner bl">INTERACTIVE WEB INSTALLATION</div>
+  <div class="cover-corner br">DESKTOP REPAIR &amp; CHAOS</div>
+
+  <div class="cover-tag">소모임 proto presents</div>
+
+  <div class="cover-title">
+    <span>
+      CHAOS
+      <div class="glitch-layer">CHAOS</div>
+      <div class="glitch-layer2">CHAOS</div>
+    </span>
+    <span style="color: var(--purple);">&amp;</span>
+    <span>REPAIR</span>
+  </div>
+
+  <div class="cover-sub">데스크탑 리페어 & 카오스 — 인터랙티브 웹 인스톨레이션</div>
+
+  <button class="cover-cta" id="enterBtn"><span>ENTER INSTALLATION →</span></button>
+</div>
+
+<!-- ── TOOL SELECT ── -->
+<div id="tool-select">
+  <div class="ts-header">CHOOSE YOUR TOOL</div>
+  <div class="ts-sub">도구를 선택하여 화면을 파괴하거나 복구하세요</div>
+
+  <div class="tools-grid" id="toolsGrid">
+    <div class="tool-card" data-tool="hammer">
+      <span class="icon">🔨</span>
+      <div class="name">HAMMER</div>
+      <div class="desc">충격 & 유리 파편<br>화면 분쇄</div>
+    </div>
+    <div class="tool-card" data-tool="spray">
+      <span class="icon">🎨</span>
+      <div class="name">SPRAY</div>
+      <div class="desc">컬러 스프레이<br>카오스 색채</div>
+    </div>
+    <div class="tool-card" data-tool="gun">
+      <span class="icon">🔫</span>
+      <div class="name">GUN</div>
+      <div class="desc">총알 구멍<br>파괴적 정확성</div>
+    </div>
+    <div class="tool-card" data-tool="tape">
+      <span class="icon">📎</span>
+      <div class="name">TAPE</div>
+      <div class="desc">반창고 수리<br>균열 봉합</div>
+    </div>
+    <div class="tool-card" data-tool="stitch">
+      <span class="icon">🧵</span>
+      <div class="name">STITCH</div>
+      <div class="desc">바느질 복구<br>섬세한 수선</div>
+    </div>
+    <div class="tool-card" data-tool="repair">
+      <span class="icon">✨</span>
+      <div class="name">REPAIR</div>
+      <div class="desc">마법 복구<br>입자 치유</div>
+    </div>
+  </div>
+
+  <button class="ts-confirm" id="tsConfirm">SELECT A TOOL TO CONTINUE</button>
+</div>
+
+<!-- ── MAIN CANVAS ── -->
+<div id="main-canvas">
+  <div id="instruction">CLICK TO INTERACT — ESC: RESET — TAB: CHANGE TOOL</div>
+  <div id="corner-tl">PROTO // SPRING 2025</div>
+  <div id="corner-br">DESKTOP REPAIR &amp; CHAOS<br>인터랙티브 인스톨레이션</div>
+
+  <!-- Desktop background elements -->
+  <div class="desktop-el big-label" style="top:10%; left:5%">SYSTEM</div>
+  <div class="desktop-el big-label" style="bottom:15%; right:5%">ERROR</div>
+  <div class="desktop-el sys-text" style="top:22%; left:8%">// PROCESS_ID: 0x4F2A<br>// STATUS: UNSTABLE<br>// MEM: 89% FULL</div>
+  <div class="desktop-el sys-text" style="bottom:28%; right:8%; text-align:right">08 10 2000<br>this is my today<br>//dotLAB//</div>
+  <div class="desktop-el sys-text-dark" style="top:45%; left:50%; transform:translate(-50%,-50%); text-align:center; opacity:0.06; font-family:'Bebas Neue',sans-serif; font-size:clamp(60px,10vw,120px); letter-spacing:8px">CHAOS<br>&amp; REPAIR</div>
+  <div class="desktop-el sys-text" style="top:15%; right:12%">LIMM-V03 // PROTO<br>currently a thursday night<br>your love feels synthetic</div>
+  <div class="desktop-el sys-text" style="bottom:35%; left:12%">need the real shit<br>why can't you? i put<br>everything i do</div>
+  <div class="desktop-el" style="top:30%; left:30%; width:2px; height:180px; background:rgba(0,0,0,0.1)"></div>
+  <div class="desktop-el" style="top:20%; right:30%; width:120px; height:1px; background:rgba(0,0,0,0.1)"></div>
+  <div class="desktop-el sys-text" style="top:60%; right:20%; text-align:right; opacity:0.7">helloooooo can we talk now<br>4:24 // 1:17 // 9:13</div>
+  <!-- Subtle cross marks -->
+  <div class="desktop-el" style="top:40%; left:20%; font-size:20px; opacity:0.15; color:var(--orange)">✕</div>
+  <div class="desktop-el" style="top:65%; right:25%; font-size:20px; opacity:0.15; color:var(--purple)">+</div>
+
+  <!-- Effects layer (cracks, particles, etc.) -->
+  <div id="effects-layer"></div>
+
+  <!-- HUD toolbar -->
+  <div id="hud">
+    <div class="hud-label">TOOL</div>
+    <div class="hud-tool active" data-tool="hammer" id="hudHammer">🔨</div>
+    <div class="hud-tool" data-tool="spray" id="hudSpray">🎨</div>
+    <div class="hud-tool" data-tool="gun" id="hudGun">🔫</div>
+    <div class="hud-tool" data-tool="tape" id="hudTape">📎</div>
+    <div class="hud-tool" data-tool="stitch" id="hudStitch">🧵</div>
+    <div class="hud-tool" data-tool="repair" id="hudRepair">✨</div>
+    <div class="hud-sep"></div>
+    <div class="hud-esc">ESC / RESET</div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let currentScreen = 'cover';
+let selectedTool = null;
+let activeTool = 'hammer';
+const sprayColors = ['#6b00ff','#ff4500','#00e5ff','#ff00aa','#ffea00','#00ff88'];
+
+// ── Cursor ──
+const $cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  $cursor.style.left = e.clientX + 'px';
+  $cursor.style.top  = e.clientY + 'px';
+});
+
+// ── Sound engine (Web Audio API) ──
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx;
+function getAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  return audioCtx;
+}
+
+function playHammer() {
+  const ac = getAudio();
+  const buf = ac.createBuffer(1, ac.sampleRate * 0.12, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.max(0, 1 - i / (data.length * 0.2));
+  }
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  const g = ac.createGain();
+  g.gain.setValueAtTime(0.6, ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.01, ac.currentTime + 0.12);
+  src.connect(g); g.connect(ac.destination); src.start();
+}
+
+function playSpray() {
+  const ac = getAudio();
+  const buf = ac.createBuffer(1, ac.sampleRate * 0.25, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = (Math.random() * 2 - 1) * 0.05 * (1 - i / data.length);
+  }
+  const src = ac.createBufferSource();
+  src.buffer = buf;
+  const g = ac.createGain(); g.gain.value = 0.3;
+  src.connect(g); g.connect(ac.destination); src.start();
+}
+
+function playRepair() {
+  const ac = getAudio();
+  [0, 4, 7, 12].forEach((semi, i) => {
+    const osc = ac.createOscillator();
+    const g   = ac.createGain();
+    osc.frequency.value = 440 * Math.pow(2, semi / 12);
+    osc.type = 'square';
+    g.gain.setValueAtTime(0, ac.currentTime + i * 0.06);
+    g.gain.linearRampToValueAtTime(0.15, ac.currentTime + i * 0.06 + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + i * 0.06 + 0.2);
+    osc.connect(g); g.connect(ac.destination);
+    osc.start(ac.currentTime + i * 0.06);
+    osc.stop(ac.currentTime + i * 0.06 + 0.25);
+  });
+}
+
+function playGun() {
+  const ac = getAudio();
+  const buf = ac.createBuffer(1, ac.sampleRate * 0.08, ac.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < data.length; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(Math.max(0, 1 - i / (data.length * 0.05)), 2);
+  }
+  const src = ac.createBufferSource(); src.buffer = buf;
+  const g = ac.createGain(); g.gain.value = 0.8;
+  src.connect(g); g.connect(ac.destination); src.start();
+}
+
+// ── Background tiles (cover) ──
+function buildBgTiles() {
+  const container = document.getElementById('bgTiles');
+  const colors = ['#6b00ff','#ff4500','#00e5ff','#ff00aa','#0a0a0a'];
+  for (let i = 0; i < 20; i++) {
+    const d = document.createElement('div');
+    const s = 20 + Math.random() * 80;
+    d.className = 'bg-tile';
+    d.style.cssText = `
+      width:${s}px; height:${s}px;
+      left:${Math.random()*100}%; top:${Math.random()*100}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-delay:${Math.random()*8}s;
+      animation-duration:${6+Math.random()*8}s;
+    `;
+    container.appendChild(d);
+  }
+}
+buildBgTiles();
+
+// ── Screen transitions ──
+function showToolSelect() {
+  const cover = document.getElementById('cover');
+  cover.style.transition = 'opacity 0.4s';
+  cover.style.opacity = '0';
+  setTimeout(() => {
+    cover.style.display = 'none';
+    const ts = document.getElementById('tool-select');
+    ts.style.display = 'flex';
+    currentScreen = 'toolselect';
+  }, 400);
+}
+
+function showMainCanvas() {
+  const ts = document.getElementById('tool-select');
+  ts.style.transition = 'opacity 0.3s';
+  ts.style.opacity = '0';
+  setTimeout(() => {
+    ts.style.display = 'none';
+    const mc = document.getElementById('main-canvas');
+    mc.style.display = 'block';
+    activeTool = selectedTool || 'hammer';
+    updateHUD();
+    updateCursorClass();
+    currentScreen = 'main';
+  }, 300);
+}
+
+// ── Cover button ──
+document.getElementById('enterBtn').addEventListener('click', showToolSelect);
+
+// ── Tool select logic ──
+document.querySelectorAll('.tool-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.tool-card').forEach(c => c.classList.remove('selected'));
+    card.classList.add('selected');
+    selectedTool = card.dataset.tool;
+    const btn = document.getElementById('tsConfirm');
+    btn.textContent = `USE ${selectedTool.toUpperCase()} →`;
+    btn.classList.add('ready');
+  });
+});
+
+document.getElementById('tsConfirm').addEventListener('click', () => {
+  if (selectedTool) showMainCanvas();
+});
+
+// ── HUD tool switching ──
+function updateHUD() {
+  document.querySelectorAll('.hud-tool').forEach(el => {
+    el.classList.toggle('active', el.dataset.tool === activeTool);
+  });
+}
+function updateCursorClass() {
+  $cursor.className = activeTool;
+  $cursor.style.id = '';
+}
+
+document.querySelectorAll('.hud-tool').forEach(el => {
+  el.addEventListener('click', () => {
+    activeTool = el.dataset.tool;
+    updateHUD();
+    updateCursorClass();
+  });
+});
+
+// Tab key cycles tools
+const toolOrder = ['hammer','spray','gun','tape','stitch','repair'];
+document.addEventListener('keydown', e => {
+  if (currentScreen !== 'main') return;
+  if (e.key === 'Escape') resetCanvas();
+  if (e.key === 'Tab') {
+    e.preventDefault();
+    const idx = toolOrder.indexOf(activeTool);
+    activeTool = toolOrder[(idx + 1) % toolOrder.length];
+    updateHUD(); updateCursorClass();
+  }
+});
+
+// ── Screen shake ──
+function shakeScreen() {
+  const mc = document.getElementById('main-canvas');
+  mc.classList.remove('shaking');
+  void mc.offsetWidth;
+  mc.classList.add('shaking');
+  setTimeout(() => mc.classList.remove('shaking'), 150);
+}
+
+function invertFlash() {
+  const mc = document.getElementById('main-canvas');
+  mc.classList.remove('invert-flash');
+  void mc.offsetWidth;
+  mc.classList.add('invert-flash');
+  setTimeout(() => mc.classList.remove('invert-flash'), 100);
+}
+
+// ── Effects ──
+const effects = document.getElementById('effects-layer');
+
+function spawnShards(x, y, count = 12) {
+  for (let i = 0; i < count; i++) {
+    const shard = document.createElement('div');
+    shard.className = 'shard';
+    const w = 10 + Math.random() * 40;
+    const h = 8 + Math.random() * 30;
+    const angle = Math.random() * 360;
+    const dx = (Math.random() - 0.5) * 200;
+    const dy = 60 + Math.random() * 200;
+    const rot = (Math.random() - 0.5) * 720;
+    const dur = 0.6 + Math.random() * 0.8;
+
+    // Random shard color: mostly glass-like, some color
+    const colors = ['rgba(180,220,240,0.7)','rgba(255,255,255,0.6)','rgba(200,200,200,0.5)',
+                    'rgba(107,0,255,0.4)','rgba(255,69,0,0.5)','rgba(0,229,255,0.4)'];
+    const color = colors[Math.floor(Math.random()*colors.length)];
+
+    shard.style.cssText = `
+      left:${x}px; top:${y}px;
+      width:${w}px; height:${h}px;
+      background:${color};
+      border:1px solid rgba(255,255,255,0.5);
+      clip-path:polygon(${Math.random()*30}% 0%, 100% ${Math.random()*30}%, ${70+Math.random()*30}% 100%, 0% ${70+Math.random()*30}%);
+      transform:rotate(${angle}deg);
+      --dx:${dx}px; --dy:${dy}px; --rot:${rot}deg; --dur:${dur}s;
+    `;
+    effects.appendChild(shard);
+    setTimeout(() => shard.remove(), dur * 1000 + 100);
+  }
+}
+
+function spawnCrack(x, y) {
+  const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.classList.add('crack-overlay');
+  const size = 80 + Math.random() * 100;
+  svg.style.cssText = `left:${x - size/2}px; top:${y - size/2}px; width:${size}px; height:${size}px;`;
+  svg.setAttribute('viewBox',`0 0 ${size} ${size}`);
+  const cx = size/2, cy = size/2;
+  let paths = '';
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * Math.PI * 2 + Math.random() * 0.4;
+    const len = (size * 0.3) + Math.random() * (size * 0.2);
+    const ex = cx + Math.cos(angle) * len;
+    const ey = cy + Math.sin(angle) * len;
+    const mx = cx + Math.cos(angle + 0.3) * len * 0.5;
+    const my = cy + Math.sin(angle + 0.3) * len * 0.5;
+    paths += `<path d="M${cx},${cy} Q${mx},${my} ${ex},${ey}" stroke="rgba(0,0,0,0.6)" stroke-width="${0.5+Math.random()}" fill="none" opacity="${0.5+Math.random()*0.5}"/>`;
+  }
+  svg.innerHTML = paths;
+  effects.appendChild(svg);
+}
+
+function spawnSpray(x, y) {
+  const color = sprayColors[Math.floor(Math.random()*sprayColors.length)];
+  for (let i = 0; i < 30; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'spray-dot';
+    const r = 2 + Math.random() * 8;
+    const offX = (Math.random()-0.5) * 80;
+    const offY = (Math.random()-0.5) * 80;
+    dot.style.cssText = `
+      left:${x + offX}px; top:${y + offY}px;
+      width:${r}px; height:${r}px;
+      background:${color};
+      opacity:${0.4+Math.random()*0.6};
+    `;
+    effects.appendChild(dot);
+    setTimeout(() => dot.remove(), 1500);
+  }
+  // Permanent spray stain
+  const stain = document.createElement('div');
+  stain.style.cssText = `
+    position:absolute; left:${x}px; top:${y}px;
+    width:${20+Math.random()*40}px; height:${20+Math.random()*40}px;
+    background:radial-gradient(circle, ${color}88 0%, transparent 70%);
+    transform:translate(-50%,-50%);
+    pointer-events:none; z-index:3;
+  `;
+  effects.appendChild(stain);
+}
+
+function spawnTape(x, y) {
+  const strip = document.createElement('div');
+  strip.className = 'tape-strip';
+  const w = 80 + Math.random() * 120;
+  const rot = (Math.random()-0.5) * 30;
+  strip.style.cssText = `
+    left:${x - w/2}px; top:${y}px;
+    width:${w}px;
+    transform:rotate(${rot}deg);
+  `;
+  effects.appendChild(strip);
+}
+
+function spawnStitch(x, y) {
+  const mark = document.createElement('div');
+  mark.className = 'stitch-mark';
+  mark.style.left = x + 'px';
+  mark.style.top  = y + 'px';
+  effects.appendChild(mark);
+
+  // Draw a stitch line to previous stitch
+  if (effects._lastStitch) {
+    const lx = effects._lastStitch.x;
+    const ly = effects._lastStitch.y;
+    const line = document.createElement('div');
+    const dist = Math.hypot(x-lx, y-ly);
+    const angle = Math.atan2(y-ly, x-lx) * 180 / Math.PI;
+    line.style.cssText = `
+      position:absolute;
+      left:${lx}px; top:${ly}px;
+      width:${dist}px; height:2px;
+      background: repeating-linear-gradient(90deg, var(--magenta) 0, var(--magenta) 6px, transparent 6px, transparent 10px);
+      transform-origin: 0 50%;
+      transform: rotate(${angle}deg);
+      pointer-events:none;
+      opacity:0.7;
+    `;
+    effects.appendChild(line);
+  }
+  effects._lastStitch = {x, y};
+}
+
+function spawnGunHole(x, y) {
+  const hole = document.createElement('div');
+  hole.className = 'bullet-hole';
+  const r = 6 + Math.random() * 8;
+  hole.style.cssText = `left:${x}px; top:${y}px; width:${r*2}px; height:${r*2}px;`;
+  effects.appendChild(hole);
+
+  // Cracks around bullet hole
+  for (let i = 0; i < 6; i++) {
+    const crack = document.createElement('div');
+    const angle = (i/6)*360;
+    const len   = 20 + Math.random()*30;
+    crack.style.cssText = `
+      position:absolute; left:${x}px; top:${y}px;
+      width:${len}px; height:1px;
+      background:rgba(0,0,0,0.5);
+      transform-origin:0 50%;
+      transform:rotate(${angle}deg);
+      pointer-events:none;
+    `;
+    effects.appendChild(crack);
+  }
+}
+
+function spawnRepair(x, y) {
+  // Sparkle ring
+  const ring = document.createElement('div');
+  ring.className = 'sparkle-ring';
+  ring.style.left = x + 'px';
+  ring.style.top  = y + 'px';
+  effects.appendChild(ring);
+  setTimeout(() => ring.remove(), 700);
+
+  // Particles
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'repair-particle';
+    const angle = Math.random() * Math.PI * 2;
+    const dist  = 30 + Math.random() * 80;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 40;
+    const dur = 0.5 + Math.random() * 0.5;
+    p.style.cssText = `
+      left:${x}px; top:${y}px;
+      --dx:${dx}px; --dy:${dy}px; --dur:${dur}s;
+    `;
+    effects.appendChild(p);
+    setTimeout(() => p.remove(), dur * 1000 + 50);
+  }
+
+  // Remove nearby damage
+  const toRemove = [];
+  effects.querySelectorAll('.crack-overlay, .bullet-hole, .spray-dot').forEach(el => {
+    const r = el.getBoundingClientRect();
+    const cx = r.left + r.width/2;
+    const cy = r.top  + r.height/2;
+    if (Math.hypot(cx-x, cy-y) < 80) toRemove.push(el);
+  });
+  toRemove.forEach(el => el.remove());
+}
+
+// ── Main canvas click handler ──
+document.getElementById('main-canvas').addEventListener('click', e => {
+  if (e.target.closest('#hud')) return;
+  const x = e.clientX, y = e.clientY;
+
+  switch(activeTool) {
+    case 'hammer':
+      shakeScreen();
+      invertFlash();
+      playHammer();
+      spawnShards(x, y, 14);
+      spawnCrack(x, y);
+      break;
+    case 'spray':
+      playSpray();
+      spawnSpray(x, y);
+      break;
+    case 'gun':
+      playGun();
+      spawnGunHole(x, y);
+      shakeScreen();
+      break;
+    case 'tape':
+      spawnTape(x, y);
+      break;
+    case 'stitch':
+      spawnStitch(x, y);
+      break;
+    case 'repair':
+      playRepair();
+      spawnRepair(x, y);
+      break;
+  }
+});
+
+// ── Mousemove for spray (hold) ──
+let holding = false;
+document.getElementById('main-canvas').addEventListener('mousedown', e => {
+  if (e.target.closest('#hud')) return;
+  holding = true;
+});
+document.addEventListener('mouseup', () => { holding = false; });
+document.addEventListener('mousemove', e => {
+  if (!holding || currentScreen !== 'main') return;
+  if (activeTool === 'spray') {
+    spawnSpray(e.clientX, e.clientY);
+  }
+});
+
+// ── Reset ──
+function resetCanvas() {
+  effects.innerHTML = '';
+  effects._lastStitch = null;
+}
+
+// ── Init ──
+updateCursorClass();
+</script>
+</body>
+</html>
