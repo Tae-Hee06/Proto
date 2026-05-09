@@ -2,30 +2,15 @@
     margin:0;
     padding: 0;
     box-sizing: border-box;
+    background-color: rgb(246, 212, 212)
 }
-@import url('https://fonts.googleapis.com/css2?family=Turret+Road:wght@200;300;400;500;700;800&display=swap');
-</style>);
-body {
-    background color: rgb(103, 86, 61);
-    color: dimgray;
-    font-size: 2vw;
-    letter-spacing: 0.1px;
-    word-spacing: 0.5em;
-    line-height: 1.8;
-    text-align: left;
-    word-break: keep-all;
-    padding: 30px;
-    padding-left: 30px;
-    max-width: 800px;
-   /margin: 0 auto;
+eng-title {
+    font-family: 'Fontdiner Swanky', sans-serif;
 }
-
 h1,
 h2 {
    text-align: center;
-   color:crimson;
-   <style>
-   
+   color:rgb(230, 66, 99);
 }
 .instruction {
     color: tomato;
@@ -35,14 +20,67 @@ h2 {
     border-bottom: 3px solid rosybrown;
     padding-bottom: 5px;
     margin-bottom: 20px;
+    text-align: center;
+}
+body {
+    font-size: 1vw;
+    font-family: 'Jua', sans-serif;
+    letter-spacing: 0.1px;
+    word-spacing: 0.2em;
+    line-height: 1.5;
+    word-break: keep-all;
+    padding: 20px;
+    padding-left: 30px;
+    max-width: 2000px;
+    margin: 0 auto;
 }
 h3 {
-    color:turquoise
+    color:rgb(93, 2, 46)
+    text-align: center;
 }
 strong {
-    color: red;
+    color: rgb(255, 0, 72);
+}
+p {
+    text-align: center;
+}
+img {
+    display: block;
+    margin: 0 auto;
+}
+ol {
+    text-align: center;
+}
+ul {
+    text-align: center;
+}
+li:hover {
+    color: rgb(255, 107, 156);
+}
+h3 {
+    text-align: center;
+    color: rgb(58, 7, 7)
+}
+details {
+    text-align: center;
+}
+summary {
+    color:rgb(187, 51, 101);
+}
+h2 {
+    text-align: center;
+}
+menu {
+    text-align: center;
+}
+/* 스크롤 애니메이션 */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
-li:hover {
-    color: brown;
+.reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
